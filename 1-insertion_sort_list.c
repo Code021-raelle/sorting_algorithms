@@ -9,54 +9,30 @@ listint_t *sortedInsert(listint_t **head_ref, listint_t *new_node);
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *sorted = NULL;
-	listint_t *current = *list;
+	listint_t *current, *temp;
 
+	if (list == NULL || *list == NULL)
+		return;
+
+	current = (*list)->next;
 	while (current != NULL)
 	{
-		listint_t *next = current->next;
-
-		current->next = NULL;
-
-		sorted = sortedInsert(&sorted, current);
-
-		current = next;
-	}
-
-	*list = sorted;
-}
-
-/**
- * sortedInsert - inserts a node into a sorted doubly linked list
- *
- * @head_ref: double pointer to head of the list
- * @new_node: node to be inserted
- * Return: void
- */
-listint_t *sortedInsert(listint_t **head_ref, listint_t *new_node)
-{
-	listint_t *current;
-
-	if (*head_ref == NULL || (*head_ref)->n >= new_node->n)
-	{
-		new_node->next = *head_ref;
-		if (*head_ref != NULL)
-			(*head_ref)->prev = new_node;
-		*head_ref = new_node;
-	}
-	else
-	{
-		current = *head_ref;
-		while (current->next != NULL && current->next->n < new_node->n)
+		temp = current;
+		current = current->next;
+		while (temp != NULL && temp->prev != NULL && temp->prev->n > temp->n)
 		{
-			current = current->next;
+			temp->prev->next = temp->next;
+			if (temp->next != NULL)
+				temp->next->prev = temp->prev;
+			temp->next = temp->prev;
+			temp->prev = temp->prev->prev;
+			temp->next->prev = temp;
+			if (temp->prev != NULL)
+				temp->prev->next = temp;
+			else
+				*list = temp;
+			print_list(*list);
 		}
-		new_node->next = current->next;
-		if (current->next != NULL)
-			new_node->next->prev = new_node;
-		current->next = new_node;
-		new_node->prev = current;
 	}
-	return (*head_ref);
 }
 
