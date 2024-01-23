@@ -1,12 +1,11 @@
 #include "sort.h"
-#include <stdio.h>
 
 /**
  * bubble_sort - Function to perform bubble sort on an array
  * @array: Pointer to the array to be sorted
  * @size: Size of the array
  *
- * Return: void
+ * Return: Nothing
  */
 void bubble_sort(int *array, size_t size)
 {
