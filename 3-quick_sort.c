@@ -1,67 +1,58 @@
 #include "sort.h"
-
-/**
- * swap - Swaps two integers
- * @a: First integer
- * @b: Second integer
- */
-void swap(int *a, int *b)
-{
-	int t = *a;
-	*a = *b;
-	*b = t;
-}
-
 /**
  * partition - Partitions the array around a pivot
- * @arr: Array to be partitioned
+ * @array: Pointer to the array
  * @low: Starting index of the array
  * @high: Ending index of the array
  *
  * Return: Index of the pivot element
  */
-int partition(int arr[], int low, int high)
+size_t partition(int *array, size_t low, size_t high)
 {
-	int pivot = arr[high];
-	int i = (low - 1);
+	int pivot = array[high];
+	size_t i = (low - 1);
+	size_t j;
+	int temp;
 
-	for (int j = low; j <= high - 1; j++)
+	for (j = low; j <= high - 1; j++)
 	{
-		if (arr[j] < pivot)
+		if (array[j] <= pivot)
 		{
 			i++;
-			swap(&arr[i], &arr[j]);
+			temp = array[i];
+			array[i] = array[j];
+			array[j] = temp;
+
+			print_array(array, high - low + 1);
 		}
 	}
-	swap(&arr[i + 1], &arr[high]);
+
+	temp = array[i + 1];
+	array[i + 1] = array[high];
+	array[high] = temp;
+
+	print_array(array, high - low + 1);
+
 	return (i + 1);
 }
 
 /**
- * quick_sort - Sorts an array of integers in ascending order using QuickSort
- * @arr: Array to be sorted
- * @low: Starting index of the array
- * @high: Ending index of the array
+ * quick_sort - Sorts an array of integers in ascending order
+ * @array: Pointer to the array
+ * @size: Size of the array
  */
-void quick_sort(int array[], size_t size)
+void quick_sort(int *array, size_t size)
 {
-	quick_sort_recursie(array, 0, size - 1);
-}
+	size_t pi;
 
-/**
- * quick_sort_recursive - Recursively sorts an array of integers
- * @array: Array to be sorted
- * @low: Starting index of the array
- * @high: Ending index of the array
- */
-void quick_sort_recursive(int array[], int low, int high)
-{
-	if (low < high)
+	if (size < 2)
 	{
-		int pi = partition(arr, low, high);
-
-		quick_sort(arr, low, pi - 1);
-		quick_sort(arr, pi + 1, high);
+		return;
 	}
+
+	pi = partition(array, 0, size - 1);
+
+	quick_sort(array, pi);
+	quick_sort(&array[pi + 1], size - pi - 1);
 }
 
