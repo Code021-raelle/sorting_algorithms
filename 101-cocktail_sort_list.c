@@ -1,16 +1,30 @@
 #include "sort.h"
+#include <stdlib.h>
+
+void swap_sort(listint_t **list, listint_t *end, int *swapped)
 
 /**
- * swap - Swaps two nodes in a doubly linked list
- * @a: Node to be swapped
- * @b: Node to be swapped
+ * swap_sort - Performs a bubble sort pass on the list
+ * @list: Double pointer to the first element of the list
+ * @end: Pointer to the end of the list
+ * @swapped: Pointer to a flag indicating whether a swap occurred
  */
-void swap(listint_t **a, listint_t **b)
+void swap_sort(listint_t **list, listint_t *end, int *swapped)
 {
-	listint_t *temp = *a;
-	*a = *b;
-	*b = temp;
-	print_list(list);
+	listint_t *start = *list;
+	int temp;
+
+	while (start->next != end)
+	{
+		if (start->n > start->next->n)
+		{
+			temp = start->n;
+			start->n = start->next->n;
+			start->next->n = temp;
+			*swapped = 1;
+		}
+		start = start->next;
+	}
 }
 
 /**
@@ -21,43 +35,38 @@ void swap(listint_t **a, listint_t **b)
 void cocktail_sort_list(listint_t **list)
 {
 	listint_t *start = *list;
-	listint_t *end = NULL;
-	listint_t *temp = NULL;
-	int swapped = 1;
+	listint_t *end;
+	int swapped;
+	int temp;
 
-	if (list == NULL || *list == NULL)
-	{
+	if (start == NULL)
 		return;
-	}
 
-	while (swapped)
-	{
+	do {
 		swapped = 0;
-		temp = start;
+		end = NULL;
 
-		while (temp->next != end)
+		swap_sort(&start, end, &swapped);
+
+		if (!swapped)
+			break;
+
+		swapped = 0;
+		start = *list;
+		end = NULL;
+		while (start->next != end)
 		{
-			if (temp->n > temp->next->n)
+			if (start->n > start->next->n)
 			{
-				swap(&temp, &(temp->next));
+				temp = start->n;
+				start->n = start->next->n;
+				start->next->n = temp;
 				swapped = 1;
 			}
-			temp = temp->next;
+			start = start->next;
 		}
 
-		end = temp;
-
-		while (temp->prev != start)
-		{
-			temp = temp->prev;
-			if (temp->n > temp->prev->n)
-			{
-				swap(&temp, &(temp->prev));
-				swapped = 1;
-			}
-		}
-
-		start = temp->prev;
-	}
+		print_list(*list);
+	} while (swapped);
 }
 
