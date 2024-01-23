@@ -1,44 +1,67 @@
 #include "sort.h"
-#include <stdio.h>
 
 /**
- * quick_sort - Sorts an array of integers in ascending order
- *              using the QuickSort algorithm
- * @array: Pointer to the first element of the array
- * @size: Number of elements in the array
- *
- * Return: void
+ * swap - Swaps two integers
+ * @a: First integer
+ * @b: Second integer
  */
-void quick_sort(int *array, size_t size)
+void swap(int *a, int *b)
 {
-	if (size <= 1)
-		return;
+	int t = *a;
+	*a = *b;
+	*b = t;
+}
 
-	int pivot = array[size - 1];
-	int i = 0;
-	int j = size - 1;
+/**
+ * partition - Partitions the array around a pivot
+ * @arr: Array to be partitioned
+ * @low: Starting index of the array
+ * @high: Ending index of the array
+ *
+ * Return: Index of the pivot element
+ */
+int partition(int arr[], int low, int high)
+{
+	int pivot = arr[high];
+	int i = (low - 1);
 
-	while (i < j)
+	for (int j = low; j <= high - 1; j++)
 	{
-		while (array[i] <= pivot && i < j)
-			i++;
-		while (array[j] > pivot)
-			j--;
-
-		if (i < j)
+		if (arr[j] < pivot)
 		{
-			int temp = array[i];
-
-			array[i] = array[j];
-			array[j] = temp;
-
-			for (size_t k = 0; k < size; k++)
-				printf("%d ", array[k]);
-			printf("\n");
+			i++;
+			swap(&arr[i], &arr[j]);
 		}
 	}
+	swap(&arr[i + 1], &arr[high]);
+	return (i + 1);
+}
 
-	quick_sort(array, i);
-	quick_sort(array + i, size - i);
+/**
+ * quick_sort - Sorts an array of integers in ascending order using QuickSort
+ * @arr: Array to be sorted
+ * @low: Starting index of the array
+ * @high: Ending index of the array
+ */
+void quick_sort(int array[], size_t size)
+{
+	quick_sort_recursie(array, 0, size - 1);
+}
+
+/**
+ * quick_sort_recursive - Recursively sorts an array of integers
+ * @array: Array to be sorted
+ * @low: Starting index of the array
+ * @high: Ending index of the array
+ */
+void quick_sort_recursive(int array[], int low, int high)
+{
+	if (low < high)
+	{
+		int pi = partition(arr, low, high);
+
+		quick_sort(arr, low, pi - 1);
+		quick_sort(arr, pi + 1, high);
+	}
 }
 
