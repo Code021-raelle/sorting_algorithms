@@ -1,31 +1,5 @@
 #include "sort.h"
-#include <stdlib.h>
-
-void swap_sort(listint_t **list, listint_t *end, int *swapped)
-
-/**
- * swap_sort - Performs a bubble sort pass on the list
- * @list: Double pointer to the first element of the list
- * @end: Pointer to the end of the list
- * @swapped: Pointer to a flag indicating whether a swap occurred
- */
-void swap_sort(listint_t **list, listint_t *end, int *swapped)
-{
-	listint_t *start = *list;
-	int temp;
-
-	while (start->next != end)
-	{
-		if (start->n > start->next->n)
-		{
-			temp = start->n;
-			start->n = start->next->n;
-			start->next->n = temp;
-			*swapped = 1;
-		}
-		start = start->next;
-	}
-}
+#include <stdio.h>
 
 /**
  * cocktail_sort_list - Sorts a doubly linked list of integers in ascending
@@ -34,39 +8,62 @@ void swap_sort(listint_t **list, listint_t *end, int *swapped)
  */
 void cocktail_sort_list(listint_t **list)
 {
-	listint_t *start = *list;
-	listint_t *end;
 	int swapped;
-	int temp;
+	listint_t *current;
+	listint_t *tmp;
 
-	if (start == NULL)
+	if (list == NULL || *list == NULL)
 		return;
 
-	do {
+	do
+	{
 		swapped = 0;
-		end = NULL;
+		for (current = *list; current->next != NULL; current = current->next)
+		{
+			if (current->n > current->next->n)
+			{
+				if (current->prev != NULL)
+					current->prev->next = current->next;
+				else
+					*list = current->next;
 
-		swap_sort(&start, end, &swapped);
+				current->next->prev = current->prev;
+				current->prev = current->next;
+				current->next = current->next->next;
 
-		if (!swapped)
+				if (current->next != NULL)
+					current->next->prev = current;
+
+				current->prev->next = current;
+				swapped = 1;
+				print_list(*list);
+			}
+		}
+
+		if (swapped == 0)
 			break;
 
 		swapped = 0;
-		start = *list;
-		end = NULL;
-		while (start->next != end)
+		for (; current->prev != NULL; current = current->prev)
 		{
-			if (start->n > start->next->n)
+			if (current->n < current->prev->n)
 			{
-				temp = start->n;
-				start->n = start->next->n;
-				start->next->n = temp;
-				swapped = 1;
-			}
-			start = start->next;
-		}
+				if (current->next != NULL)
+					current->next->prev = current->prev;
+				else
+					current->prev->next = NULL;
 
-		print_list(*list);
+				current->prev->next = current->next;
+				current->next = current->prev;
+				current->prev = current->prev->prev;
+
+				if (current->prev != NULL)
+					current->prev->next = current;
+
+				swapped = 1;
+				print_list(*list);
+			}
+		}
 	} while (swapped);
 }
 
